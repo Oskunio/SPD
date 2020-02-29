@@ -54,7 +54,8 @@ void makeOrder(int* order,int*R,int*P,int*Q,int n) {
     int minp[2];
     int minq[2];
     int doneTable[TABLESSIZE];
-    int j = 0;
+    int begin = 0;
+    int end = n;
 
     for (int i = 0; i < n; i++) {
         doneTable[i] = 0;
@@ -66,25 +67,22 @@ void makeOrder(int* order,int*R,int*P,int*Q,int n) {
         minq[1] = 0;
         for (int i = 0; i < n; i++) {
             if (doneTable[i] == 0) {
-                if (minr[0] > R[i]) {
+                if ((minr[0] > R[i])&&minq[1]!=i) {
                     minr[0] = R[i];
                     minr[1] = i;
                 }
-                if (minq[0] > Q[i]) {
+                if (minq[0] > Q[i] && minr[1]!=i) {
                     minq[0] = Q[i];
                     minq[1] = i;
                 }
             }
         }
-        if (minq[0] < minr[0]) {
-            order[j] = minq[1];
-            doneTable[minq[1]] = 1;
-        }
-        else {
-            order[j] = minr[1];
-            doneTable[minr[1]] = 1;
-        }
-        j++;
+        order[end] = minq[1];
+        doneTable[minq[1]] = 1;
+        order[begin] = minr[1];
+        doneTable[minr[1]] = 1;
+        begin++;
+        end--;
     }
 }
 
