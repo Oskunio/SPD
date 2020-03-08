@@ -51,22 +51,39 @@ bool isOrderingDone(int* doneTable) {
 
 void makeOrder(int* order,int*R,int*P,int*Q,int n) {
     int minr[2];
-    int minp[2];
     int minq[2];
+    int lastminr[2];
+    int lastminq[2];
     int doneTable[TABLESSIZE];
+    int begin = 0;
+    int end = n;
+    int helpi = 0;
+    int newOrder[TABLESSIZE];
     int j = 0;
+    int middle = n / 2;
 
+    
+    for (int i = 0; i < TABLESSIZE; i++) {
+        order[i] = i;
+        newOrder[i] = i;
+    }
+
+    for (int i = 0; i < TABLESSIZE; i++) {
+        doneTable[i] = 1;
+    }
     for (int i = 0; i < n; i++) {
         doneTable[i] = 0;
     }
+
     while (!isOrderingDone(doneTable)) {
+
         minr[0] = 999999999;
-        minr[1] = 0;
+        minr[1] = helpi;
         minq[0] = 999999999;
-        minq[1] = 0;
+        minq[1] = helpi;
         for (int i = 0; i < n; i++) {
-            if (doneTable[i] == 0) {
-                if (minr[0] > R[i]) {
+            if ((doneTable[i] == 0)) {
+                if ((minr[0] > R[i])) {
                     minr[0] = R[i];
                     minr[1] = i;
                 }
@@ -76,15 +93,20 @@ void makeOrder(int* order,int*R,int*P,int*Q,int n) {
                 }
             }
         }
-        if (minq[0] < minr[0]) {
-            order[j] = minq[1];
-            doneTable[minq[1]] = 1;
+        if (minr[1] == minq[1]) {
+            order[middle] = minq[1];
+            middle++;
+            doneTable[minq[1]]=1;
         }
         else {
-            order[j] = minr[1];
+            order[begin] = minr[1];
             doneTable[minr[1]] = 1;
+            order[end] = minq[1];
+            doneTable[minq[1]] = 1;
+            end--;
+            begin++;
+            helpi++;
         }
-        j++;
     }
 }
 
