@@ -8,6 +8,15 @@ using namespace std;
 
 const int TABLESSIZE = 99;
 
+void init(int* R, int* P, int* Q, int* order) {
+    for (int i = 0; i < TABLESSIZE; i++) {
+        R[i] = 0;
+        P[i] = 0;
+        Q[i] = 0;
+        order[i] = i;
+    }
+}
+
 void loadData(string dataPath, int* R, int* P, int* Q, int* n) {
     fstream dane;
     dane.open(dataPath, ios::in);
@@ -38,7 +47,11 @@ int doTask(int *R,int*P,int*Q,int*n,int* order) {
     }
     return c;
 }
-
+// Funkcja sprawdza czy wszystkie elementy przesłanej tablicy ustawione są na 1
+// Przyjmuje:
+//      *doneTable - tablica zawierająca elementy do sprawdzenia
+// Zwraca:
+//      isDone - flaga oznaczająca, że wszystkie elementy tablicy wynoszą 1
 bool isOrderingDone(int* doneTable) {
     bool isDone = true;
     for (int i = 0; i < TABLESSIZE; i++) {
@@ -49,24 +62,30 @@ bool isOrderingDone(int* doneTable) {
     return isDone;
 }
 
+// Funkcja ustawia kolejność
+// Przyjmuje:
+//      *order - wskaźnik do kolejności wstępnie ułorzonej po kolei
+//      *R - wskaźnik na tablicę zawierającą r
+//      *P - wskaźnik na tablicę zawierającą p
+//      *Q - wskaźnik na tablicę zawierającą q
+//      n - liczba elementów do ułożenia
 void makeOrder(int* order,int*R,int*P,int*Q,int n) {
-    int minr[2];
-    int minq[2];
-    int lastminr[2];
-    int lastminq[2];
+    //Tablica zawierająca elementy ustawione
+    //Wstępnie wszystkie ustawione zostają na 1 aby zainicjować tablicę
+    //Następnie n elementów tablicy ustawione zostaje na 0 co oznacza nie ułożenie danego elementu
     int doneTable[TABLESSIZE];
+    //Zmienna przechowuje indeks na pierwszy nieułożony element tablicy order
     int begin = 0;
+    //Zmienna przechowuje indeks na ostatni nieułożony element tablicy order
     int end = n;
-    int helpi = 0;
-    int newOrder[TABLESSIZE];
-    int j = 0;
+    //Zmienna przechowuje indeks na środkowy element tablicy order
     int middle = n / 2;
-
-    
-    for (int i = 0; i < TABLESSIZE; i++) {
-        order[i] = i;
-        newOrder[i] = i;
-    }
+    //Zmienna pomocnicza licząca ilość ułożeń na środku
+    int helpMeInTheMiddle=0;
+    //Tablice minq i minr zawierają:
+    //      minq/minr[0] - wartość elemetnu minimalnego
+    //      minq/minr[1] - numer indeksu elementu minimalnego
+    int minq[2], minr[2];
 
     for (int i = 0; i < TABLESSIZE; i++) {
         doneTable[i] = 1;
@@ -75,37 +94,41 @@ void makeOrder(int* order,int*R,int*P,int*Q,int n) {
         doneTable[i] = 0;
     }
 
-    while (!isOrderingDone(doneTable)) {
-
-        minr[0] = 999999999;
-        minr[1] = helpi;
+    while(!isOrderingDone(doneTable)) {
         minq[0] = 999999999;
-        minq[1] = helpi;
+        minq[1] = 0;
+        minr[0] = 999999999;
+        minr[1] = 0;
         for (int i = 0; i < n; i++) {
-            if ((doneTable[i] == 0)) {
-                if ((minr[0] > R[i])) {
-                    minr[0] = R[i];
-                    minr[1] = i;
-                }
-                if (minq[0] > Q[i]) {
+            if (doneTable[i] == 0) {
+                if (minq[0] >= Q[i]) {
                     minq[0] = Q[i];
                     minq[1] = i;
                 }
+                if (minr[0] >= R[i]) {
+                    minr[0] = R[i];
+                    minr[1] = i;
+                }
             }
         }
-        if (minr[1] == minq[1]) {
-            order[middle] = minq[1];
-            middle++;
-            doneTable[minq[1]]=1;
+        //Jeśli indeksy wartości minimalnych się pokrywają, daj je na środek i wylicz nowy element środkowy
+        if (minq[1] == minr[1]) {
+            order[middle] = minr[1];
+            doneTable[minr[1]] = 1;
+            if (helpMeInTheMiddle % 2 == 0) {
+                middle -= helpMeInTheMiddle;
+            }
+            else {
+                middle += helpMeInTheMiddle;
+            }
         }
         else {
             order[begin] = minr[1];
             doneTable[minr[1]] = 1;
+            begin++;
             order[end] = minq[1];
             doneTable[minq[1]] = 1;
             end--;
-            begin++;
-            helpi++;
         }
     }
 }
@@ -113,15 +136,16 @@ void makeOrder(int* order,int*R,int*P,int*Q,int n) {
 
 int main()
 {
-    int R[TABLESSIZE],P[TABLESSIZE],Q[TABLESSIZE],order[TABLESSIZE];
+    int R[TABLESSIZE], P[TABLESSIZE], Q[TABLESSIZE], order[TABLESSIZE];
     int n=0;
-    int time1, time2, time3, time4, alltime;
+    int time1=0, time2=0, time3=0, time4=0, alltime=0;
+    init(R, P, Q, order);
 
     loadData("dane1.txt", R, P, Q, &n);
     makeOrder(order,R,P,Q,n);
     cout << "Całkowity czas zadania danych 1 dla kolejnosci:";
     for (int i = 0; i < n; i++) {
-        cout << order[i]<<" ";
+        cout << order[i]+1<<" ";
     }
     time1 = doTask(R, P, Q, &n, order);
     cout << "\nWynosi: " << time1<<endl;
@@ -130,7 +154,7 @@ int main()
     makeOrder(order, R, P, Q, n);
     cout << "Całkowity czas zadania danych 2 dla kolejnosci:";
     for (int i = 0; i < n; i++) {
-        cout << order[i] << " ";
+        cout << order[i]+1 << " ";
     }
     time2 = doTask(R, P, Q, &n, order);
     cout << "\nWynosi: " << time2<<endl;
@@ -139,7 +163,7 @@ int main()
     makeOrder(order, R, P, Q, n);
     cout << "Całkowity czas zadania danych 3 dla kolejnosci:";
     for (int i = 0; i < n; i++) {
-        cout << order[i] << " ";
+        cout << order[i]+1 << " ";
     }
     time3= doTask(R, P, Q, &n, order);
     cout << "\nWynosi: " << time3<<endl;
@@ -148,7 +172,7 @@ int main()
     makeOrder(order, R, P, Q, n);
     cout << "Całkowity czas zadania danych 4 dla kolejnosci:";
     for (int i = 0; i < n; i++) {
-        cout << order[i] << " ";
+        cout << order[i]+1 << " ";
     }
     time4= doTask(R, P, Q, &n, order);
     cout << "\nWynosi: " << time4<<endl;

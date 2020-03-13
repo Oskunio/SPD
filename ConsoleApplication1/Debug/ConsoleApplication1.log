@@ -1,4 +1,2 @@
 ﻿  ConsoleApplication1.cpp
-E:\Programming\SPD\SPD\ConsoleApplication1\ConsoleApplication1.cpp(55,9): warning C4101: "lastminr": lokalna zmienna, do której nie istnieje odwołanie
-E:\Programming\SPD\SPD\ConsoleApplication1\ConsoleApplication1.cpp(56,9): warning C4101: "lastminq": lokalna zmienna, do której nie istnieje odwołanie
-  ConsoleApplication1.vcxproj -> E:\Programming\SPD\SPD\Debug\ConsoleApplication1.exe
+  ConsoleApplication1.vcxproj -> E:\Programming\REPOS\SPD\Debug\ConsoleApplication1.exe
