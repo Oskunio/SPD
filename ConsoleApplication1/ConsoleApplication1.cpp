@@ -38,9 +38,16 @@ void loadData(string dataPath, int* R, int* P, int* Q, int* n) {
     }*/
 }
 
-int doTask(int *R,int*P,int*Q,int*n,int* order) {
+// Funkcja zmienia miejscami podane wartości
+void swapTab(int* el1,int* el2) {
+    int helper = *el1;
+    *el1 = *el2;
+    *el2 = helper;
+}
+
+int doTask(int *R,int*P,int*Q,int n,int* order) {
     int m = 0,c=0,i=0;
-    for (int j = 0; j < *n; j++) {
+    for (int j = 0; j < n; j++) {
         i = order[j];
         m = max(m, R[i]) + P[i];
         c = max(m + Q[i], c);
@@ -60,6 +67,34 @@ bool isOrderingDone(int* doneTable) {
         }
     }
     return isDone;
+}
+
+// Funkcja wyszukuje optymalne rozwiązanie poprzez zamiane kolejnych elementów
+void shuffleOrder(int *R, int*P,int*Q,int n, int*order) {
+    int currentBestValue = doTask(R, P, Q, n, order);
+    int currentBestOrder[TABLESSIZE];
+    int zmiennaPomocnicza=0;
+    for (int i = 0; i < TABLESSIZE; i++) {
+        currentBestOrder[i] = i;
+    }
+    for (int i = 0; i < n; i++) {
+        currentBestOrder[i] = order[i];
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            swapTab(&currentBestOrder[i], &currentBestOrder[j]);
+            if ((zmiennaPomocnicza = doTask(R, P, Q, n, currentBestOrder)) < currentBestValue) {
+                currentBestValue = zmiennaPomocnicza;
+            }
+            else {
+                swapTab(&currentBestOrder[j], &currentBestOrder[i]);
+            }
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        order[i] = currentBestOrder[i];
+    }
 }
 
 // Funkcja ustawia kolejność
@@ -131,6 +166,7 @@ void makeOrder(int* order,int*R,int*P,int*Q,int n) {
             end--;
         }
     }
+    shuffleOrder(R, P, Q, n, order);
 }
 
 
@@ -147,7 +183,7 @@ int main()
     for (int i = 0; i < n; i++) {
         cout << order[i]+1<<" ";
     }
-    time1 = doTask(R, P, Q, &n, order);
+    time1 = doTask(R, P, Q, n, order);
     cout << "\nWynosi: " << time1<<endl;
 
     loadData("dane2.txt", R, P, Q, &n);
@@ -156,7 +192,7 @@ int main()
     for (int i = 0; i < n; i++) {
         cout << order[i]+1 << " ";
     }
-    time2 = doTask(R, P, Q, &n, order);
+    time2 = doTask(R, P, Q, n, order);
     cout << "\nWynosi: " << time2<<endl;
 
     loadData("dane3.txt", R, P, Q, &n);
@@ -165,7 +201,7 @@ int main()
     for (int i = 0; i < n; i++) {
         cout << order[i]+1 << " ";
     }
-    time3= doTask(R, P, Q, &n, order);
+    time3= doTask(R, P, Q, n, order);
     cout << "\nWynosi: " << time3<<endl;
 
     loadData("dane4.txt", R, P, Q, &n);
@@ -174,7 +210,7 @@ int main()
     for (int i = 0; i < n; i++) {
         cout << order[i]+1 << " ";
     }
-    time4= doTask(R, P, Q, &n, order);
+    time4= doTask(R, P, Q, n, order);
     cout << "\nWynosi: " << time4<<endl;
 
     alltime = time1 + time2 + time3 + time4;
