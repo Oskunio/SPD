@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{ED627732-E577-43B8-8FE1-1DF0B0697B54}</ProjectGuid>
+    <ProjectGuid>{BCF6FF6D-1C81-494E-BFE7-826625A1A365}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>WITI</RootNamespace>
+    <RootNamespace>WiTi</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -147,7 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="WITI.cpp" />
+    <ClCompile Include="WiTi.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
