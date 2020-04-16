@@ -7,12 +7,15 @@
 using namespace std;
 
 const int MAXNUMBER = 99;
+const string DATAFILEPATH = "witi.data.txt";
 
 int checkDelayTime(int* P, int* W, int* D, int* Order, int numberOfTasks);
 void showData(int* P, int* W, int* D, int numberOfTasks, string data);
 void showOrder(int* order, int numberOfTasks);
 void passElementInSpecificLocation(int firstElement, int secondElement, int* tab, int nbOfElementsInOrder);
 bool isDone(int* tab, int nbOfTasks);
+
+
 
 int main()
 {
@@ -35,7 +38,7 @@ int main()
         doneTasks[i] = -1;
     }
 
-    dane.open("witi.data.txt", ios::in);
+    dane.open(DATAFILEPATH, ios::in);
     
     if (dane.good()) {
         dane >> data;
@@ -63,7 +66,6 @@ int main()
                     }
                 
             }
-            showOrder(Order, i);
             doneTasks[i] = 1;
             count = currentDelay;
         }
@@ -97,7 +99,7 @@ int checkDelayTime(int* P, int* W, int* D, int* Order, int numberOfTasks) {
     for (int i = 0; i < numberOfTasks; i++) {
         currentTaskNumber = Order[i];
         currentTime += P[currentTaskNumber];
-        if (D[currentTaskNumber] > currentTime) {
+        if (D[currentTaskNumber] >= currentTime) {
             currentDelayCount += 0;
         }
         else {
