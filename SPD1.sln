@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RPQ", "ConsoleApplication1\ConsoleApplication1.vcxproj", "{4FF2B48F-D8A5-44E9-B111-E4ABB5AEDA2F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WiTi", "WiTi\WiTi.vcxproj", "{BCF6FF6D-1C81-494E-BFE7-826625A1A365}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WiTi", "WITI\WiTi.vcxproj", "{BCF6FF6D-1C81-494E-BFE7-826625A1A365}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NEH", "NEH\NEH.vcxproj", "{6993C263-4F59-429A-AA3D-828632751003}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,14 @@ Global
 		{BCF6FF6D-1C81-494E-BFE7-826625A1A365}.Release|x64.Build.0 = Release|x64
 		{BCF6FF6D-1C81-494E-BFE7-826625A1A365}.Release|x86.ActiveCfg = Release|Win32
 		{BCF6FF6D-1C81-494E-BFE7-826625A1A365}.Release|x86.Build.0 = Release|Win32
+		{6993C263-4F59-429A-AA3D-828632751003}.Debug|x64.ActiveCfg = Debug|x64
+		{6993C263-4F59-429A-AA3D-828632751003}.Debug|x64.Build.0 = Debug|x64
+		{6993C263-4F59-429A-AA3D-828632751003}.Debug|x86.ActiveCfg = Debug|Win32
+		{6993C263-4F59-429A-AA3D-828632751003}.Debug|x86.Build.0 = Debug|Win32
+		{6993C263-4F59-429A-AA3D-828632751003}.Release|x64.ActiveCfg = Release|x64
+		{6993C263-4F59-429A-AA3D-828632751003}.Release|x64.Build.0 = Release|x64
+		{6993C263-4F59-429A-AA3D-828632751003}.Release|x86.ActiveCfg = Release|Win32
+		{6993C263-4F59-429A-AA3D-828632751003}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
