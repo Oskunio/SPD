@@ -104,28 +104,8 @@ int NEH(vector<Job> jobs, int prace, int maszyny)
         }
 
         swapNumber = 0;
-        // wyswietlanie kolejnych uszeregowan
-        /*
-        for (Job job : resultJobs)
-        {
-            cout << job.index + 1<< " ";
-        }
-        cout << endl;
-        */
+        
     }
-
-    // wyswietlenie tablicy wynikowej
-    /*
-    for (Job job:resultJobs)
-    {
-        for (int t : job.timesOnMachines)
-        {
-            cout << t << " ";
-        }
-        cout << endl;
-    }
-    */
-
     
     return min;
 }
