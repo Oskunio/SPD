@@ -2,10 +2,53 @@
 //
 
 #include <iostream>
+#include "Task.h"
+#include <fstream>
+#include <algorithm>
+#include <vector>
+#include <queue>
 
+
+using namespace std;
 int main()
 {
-    std::cout << "Hello World!\n";
+    ifstream stream("schr.data.txt");  // Otwarcie pliku do odczytu
+    double excecutionTime = 0;
+    if (!stream)
+    {
+        cout << "BŁĄD: nie można otworzyć pliku do odczytu." << endl;
+    }
+    string data;
+    string text;
+    int tasksNumber;
+    int temp;
+    int p = 0;
+    while (p!=7)
+    {
+        stream >> data;
+        cout << data << endl;
+        stream >> tasksNumber;
+        vector<Task> tasks;
+        Task task;
+        for (int i = 0; i < tasksNumber; i++)
+        {
+            task.index = i;
+            stream >> task.r;
+            stream >> task.p;
+            stream >> task.q;
+            tasks.push_back(task);
+        }
+        stream >> text; // schrmptn
+        stream >> temp; // czas
+        stream >> text; // schr
+        stream >> temp; // czas
+        for (int i = 0; i < tasksNumber; i++) // uporzadkowanie schr
+        {
+            stream >> temp;
+        }
+        p++;
+    }
+    
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
