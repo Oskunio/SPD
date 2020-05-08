@@ -6,10 +6,56 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
-#include <queue>
-
+#include "Heap.h"
+#include "MinHeap.h"
 
 using namespace std;
+
+int cMax(vector<Task>& tasks)
+{
+    int m = 0;
+    int c = 0;
+    for (int i = 0; i < tasks.size(); i++)
+    {
+        m = max(m, tasks[i].r) + tasks[i].p;
+        c = max(m + tasks[i].q, c);
+    }
+    return c;
+}
+int shrage(vector<Task>& tasks)
+{
+    int inputSize = tasks.size();
+    vector<Task> result;
+    Heap maxHeap(inputSize);
+    MinHeap minHeap(inputSize);
+    for (int i = 0; i < inputSize; i++)
+    {
+        minHeap.add(tasks[0]);
+    }
+    int t = 0;
+    Task e;
+
+    while (maxHeap.getSize()!=0 || minHeap.getSize() != 0)
+    {
+        while (minHeap.getSize() != 0 && minHeap.top() <= t)
+        {
+            e = minHeap.RemoveRoot();
+            maxHeap.add(e);
+        }
+        if (maxHeap.getSize() == 0)
+        {
+            t = minHeap.top();
+        }
+        else
+        {
+            e = maxHeap.RemoveRoot();
+            result.push_back(e);
+            t = t + e.p;
+        }
+    }
+    return cMax(result);
+}
+
 int main()
 {
     ifstream stream("schr.data.txt");  // Otwarcie pliku do odczytu
@@ -23,7 +69,7 @@ int main()
     int tasksNumber;
     int temp;
     int p = 0;
-    while (p!=7)
+    while (p!=9)
     {
         stream >> data;
         cout << data << endl;
@@ -38,6 +84,7 @@ int main()
             stream >> task.q;
             tasks.push_back(task);
         }
+        cout << shrage(tasks) << endl;
         stream >> text; // schrmptn
         stream >> temp; // czas
         stream >> text; // schr
@@ -48,6 +95,7 @@ int main()
         }
         p++;
     }
+    system("pause");
     
 }
 
