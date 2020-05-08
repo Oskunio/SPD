@@ -26,29 +26,29 @@ int shrage(vector<Task>& tasks)
 {
     int inputSize = tasks.size();
     vector<Task> result;
-    Heap maxHeap(inputSize);
-    MinHeap minHeap(inputSize);
+    Heap available(inputSize);
+    MinHeap notAvailable(inputSize);
     for (int i = 0; i < inputSize; i++)
     {
-        minHeap.add(tasks[0]);
+        notAvailable.add(tasks[i]);
     }
     int t = 0;
     Task e;
 
-    while (maxHeap.getSize()!=0 || minHeap.getSize() != 0)
+    while (available.getSize()!=0 || notAvailable.getSize() != 0)
     {
-        while (minHeap.getSize() != 0 && minHeap.top() <= t)
+        while (notAvailable.getSize() != 0 && notAvailable.top() <= t)
         {
-            e = minHeap.RemoveRoot();
-            maxHeap.add(e);
+            e = notAvailable.RemoveRoot();
+            available.add(e);
         }
-        if (maxHeap.getSize() == 0)
+        if (available.getSize() == 0)
         {
-            t = minHeap.top();
+            t = notAvailable.top();
         }
         else
         {
-            e = maxHeap.RemoveRoot();
+            e = available.RemoveRoot();
             result.push_back(e);
             t = t + e.p;
         }
