@@ -86,6 +86,7 @@ int schrmptn(vector<Task>& tasks)
                 if (l.p > 0)
                 {
                     available.add(l);
+                    result.pop_back();
                 }
             }
         }
@@ -133,12 +134,18 @@ int main()
             stream >> task.q;
             tasks.push_back(task);
         }
-        cout << "shrage:"<<shrage(tasks) << endl;
-        cout << "shrage z podzialem:"<<schrmptn(tasks) << endl;
+        int shrageBez, shrageZ;
+        shrageBez = shrage(tasks);
+        shrageZ = schrmptn(tasks);
+        cout << "shrage z podzialem:" << shrageZ << endl;
+        cout << "shrage bez podzialu:"<< shrageBez << endl;
+        
         stream >> text; // schrmptn
         stream >> temp; // czas
+        if (shrageZ != temp) cout << "Zly wynik shrage z podzialem !!!!!!!!!!!" << endl;
         stream >> text; // schr
         stream >> temp; // czas
+        if (shrageBez != temp) cout << "Zly wynik shrage bez podzialu !!!!!!!!!!!" << endl;
         for (int i = 0; i < tasksNumber; i++) // uporzadkowanie schr
         {
             stream >> temp;
