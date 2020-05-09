@@ -55,6 +55,55 @@ int shrage(vector<Task>& tasks)
     }
     return cMax(result);
 }
+int schrmptn(vector<Task>& tasks)
+{
+    int inputSize = tasks.size();
+    vector<Task> result;
+    Heap available(inputSize);
+    MinHeap notAvailable(inputSize);
+    for (int i = 0; i < inputSize; i++)
+    {
+        notAvailable.add(tasks[i]);
+    }
+    int t = 0;
+    Task e;
+    Task l;
+    l.r = 0;
+    l.p = 0;
+    l.q = 9999999999;
+    l.index = 0;
+
+    while (available.getSize() != 0 || notAvailable.getSize() != 0)
+    {
+        while (notAvailable.getSize() != 0 && notAvailable.top() <= t)
+        {
+            e = notAvailable.RemoveRoot();
+            available.add(e);
+            if (e.q > l.q)
+            {
+                l.p = t - e.r;
+                t = e.r;
+                if (l.p > 0)
+                {
+                    available.add(l);
+                }
+            }
+        }
+        if (available.getSize() == 0)
+        {
+            t = notAvailable.top();
+        }
+        else
+        {
+            e = available.RemoveRoot();
+            result.push_back(e);
+            l = e;
+            t = t + e.p;
+            
+        }
+    }
+    return cMax(result);
+}
 
 int main()
 {
@@ -84,7 +133,8 @@ int main()
             stream >> task.q;
             tasks.push_back(task);
         }
-        cout << shrage(tasks) << endl;
+        cout << "shrage:"<<shrage(tasks) << endl;
+        cout << "shrage z podzialem:"<<schrmptn(tasks) << endl;
         stream >> text; // schrmptn
         stream >> temp; // czas
         stream >> text; // schr
