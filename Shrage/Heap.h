@@ -18,5 +18,6 @@ public:
 	int getSize();
 	Task RemoveRoot();
 	int top();
+	void show();
 };
 

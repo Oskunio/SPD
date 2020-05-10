@@ -8,6 +8,7 @@
 #include <vector>
 #include "Heap.h"
 #include "MinHeap.h"
+#include <queue>
 
 using namespace std;
 
@@ -22,25 +23,29 @@ int cMax(vector<Task>& tasks)
     }
     return c;
 }
-int shrage(vector<Task>& tasks)
+int schrage(vector<Task>& tasks)
 {
     int inputSize = tasks.size();
+    int cmax = 0;
     vector<Task> result;
     Heap available(inputSize);
     MinHeap notAvailable(inputSize);
     for (int i = 0; i < inputSize; i++)
     {
         notAvailable.add(tasks[i]);
+
     }
+
     int t = 0;
     Task e;
 
-    while (available.getSize()!=0 || notAvailable.getSize() != 0)
+    while (available.getSize() != 0 || notAvailable.getSize() != 0)
     {
         while (notAvailable.getSize() != 0 && notAvailable.top() <= t)
         {
             e = notAvailable.RemoveRoot();
             available.add(e);
+
         }
         if (available.getSize() == 0)
         {
@@ -51,9 +56,77 @@ int shrage(vector<Task>& tasks)
             e = available.RemoveRoot();
             result.push_back(e);
             t = t + e.p;
+            cmax = max(cmax, t + e.q);
         }
     }
-    return cMax(result);
+
+    for (int i = 0; i < result.size(); i++)
+    {
+        cout << result[i].index + 1 << " ";
+    }
+    cout << endl;
+    //return cMax(result);
+    return cmax;
+}
+
+struct Rmniejsze
+{
+    bool operator()(Task& a, Task& b)
+    {
+        if (a.r > b.r)return true;
+        if (a.r < b.r)return false;
+        return false;
+    }
+};
+struct Qwieksze
+{
+    bool operator()(Task& a, Task& b)
+    {
+        if (a.q < b.q)return true;
+        if (a.q > b.q)return false;       
+        return false;
+    }
+};
+int schrage2(vector<Task>& tasks)
+{
+    priority_queue < Task, std::vector < Task >, Rmniejsze > N;
+    priority_queue < Task, std::vector < Task >, Qwieksze > G;
+    vector<Task> result;
+    int t = 0;
+    int cmax = 0;
+    Task e;
+    for (int i = 0; i < tasks.size(); i++)
+    {
+        N.push(tasks[i]);
+    }
+    while (!(N.empty()) || !(G.empty()))
+    {
+        while (!(N.empty()) && N.top().r <= t) {
+            e = N.top();
+            N.pop();
+            G.push(e);
+        }
+
+        if (G.empty()) {
+            t = N.top().r;
+        }
+        else
+        {
+            e = G.top();
+            G.pop();
+            result.push_back(e);
+            t = t + e.p;
+            cmax = max(cmax, t + e.q);
+            
+        }
+       
+    }
+    for (int i = 0; i < result.size(); i++)
+    {
+        cout << result[i].index + 1 << " ";
+    }
+    cout << endl;
+    return cmax;
 }
 int schrmptn(vector<Task>& tasks)
 {
@@ -105,10 +178,63 @@ int schrmptn(vector<Task>& tasks)
     }
     return cMax(result);
 }
+int schrmptn2(vector<Task>& tasks)
+{
+    priority_queue < Task, std::vector < Task >, Rmniejsze > N;
+    priority_queue < Task, std::vector < Task >, Qwieksze > G;
+    vector<Task> result;
+    int t = 0;
+    int cmax = 0;
+    Task e;
+    Task l;
+    l.r = 0;
+    l.p = 0;
+    l.q = 9999999999;
+    l.index = 0;
+    for (int i = 0; i < tasks.size(); i++)
+    {
+        N.push(tasks[i]);
+    }
+    while (!(N.empty()) || !(G.empty()))
+    {
+        while (!(N.empty()) && N.top().r <= t) {
+            e = N.top();
+            N.pop();
+            G.push(e);
+            if (e.q > l.q)
+            {
+                l.p = t - e.r;
+                t = e.r;
+                if (l.p > 0)
+                {
+                    G.push(l);
+                    result.pop_back();
+                }
+            }
+        }
+
+        if (G.empty()) {
+            t = N.top().r;
+        }
+        else
+        {
+            e = G.top();
+            G.pop();
+            result.push_back(e);
+            t = t + e.p;
+            l = e;
+            cmax = max(cmax, t + e.q);
+
+        }
+
+    }
+    
+    return cmax;
+}
 
 int main()
 {
-    ifstream stream("schr.data.txt");  // Otwarcie pliku do odczytu
+    ifstream stream("schr.data3.txt");  // Otwarcie pliku do odczytu
     double excecutionTime = 0;
     if (!stream)
     {
@@ -119,7 +245,7 @@ int main()
     int tasksNumber;
     int temp;
     int p = 0;
-    while (p!=9)
+    while (p!=1)
     {
         stream >> data;
         cout << data << endl;
@@ -135,8 +261,8 @@ int main()
             tasks.push_back(task);
         }
         int shrageBez, shrageZ;
-        shrageBez = shrage(tasks);
-        shrageZ = schrmptn(tasks);
+        shrageBez = schrage(tasks);
+        shrageZ = schrmptn2(tasks);
         cout << "shrage z podzialem:" << shrageZ << endl;
         cout << "shrage bez podzialu:"<< shrageBez << endl;
         

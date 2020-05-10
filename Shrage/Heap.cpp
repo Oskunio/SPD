@@ -95,4 +95,13 @@ int Heap::top()
 	return tab[0].q;
 }
 
+void Heap::show()
+{
+	for (int i = 0; i < size; i++)
+	{
+		cout << tab[i].index << " ";
+	}
+}
+
+
 

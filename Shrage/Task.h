@@ -6,5 +6,6 @@ public:
 	int p;
 	int q;
 	int index;
+	
 };
 

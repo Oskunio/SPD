@@ -96,3 +96,11 @@ int MinHeap::top()
 	return tab[0].r;
 }
 
+void MinHeap::show()
+{
+	for (int i = 0; i < size; i++)
+	{
+		cout << tab[i].index << " ";
+	}
+}
+
