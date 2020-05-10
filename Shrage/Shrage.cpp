@@ -9,6 +9,7 @@
 #include "Heap.h"
 #include "MinHeap.h"
 #include <queue>
+#include <chrono>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ int schrage(vector<Task>& tasks)
         notAvailable.add(tasks[i]);
 
     }
-
+    
     int t = 0;
     Task e;
 
@@ -45,11 +46,13 @@ int schrage(vector<Task>& tasks)
         {
             e = notAvailable.RemoveRoot();
             available.add(e);
-
+            
         }
+        
         if (available.getSize() == 0)
         {
             t = notAvailable.top();
+            
         }
         else
         {
@@ -60,12 +63,7 @@ int schrage(vector<Task>& tasks)
         }
     }
 
-    for (int i = 0; i < result.size(); i++)
-    {
-        cout << result[i].index + 1 << " ";
-    }
-    cout << endl;
-    //return cMax(result);
+    
     return cmax;
 }
 
@@ -121,11 +119,8 @@ int schrage2(vector<Task>& tasks)
         }
        
     }
-    for (int i = 0; i < result.size(); i++)
-    {
-        cout << result[i].index + 1 << " ";
-    }
-    cout << endl;
+    
+    
     return cmax;
 }
 int schrmptn(vector<Task>& tasks)
@@ -234,7 +229,7 @@ int schrmptn2(vector<Task>& tasks)
 
 int main()
 {
-    ifstream stream("schr.data3.txt");  // Otwarcie pliku do odczytu
+    ifstream stream("schr.data.txt");  // Otwarcie pliku do odczytu
     double excecutionTime = 0;
     if (!stream)
     {
@@ -244,8 +239,9 @@ int main()
     string text;
     int tasksNumber;
     int temp;
+    int time1 = 0, time2 = 0, time3 = 0, time4 = 0;
     int p = 0;
-    while (p!=1)
+    while (p!=9)
     {
         stream >> data;
         cout << data << endl;
@@ -260,24 +256,54 @@ int main()
             stream >> task.q;
             tasks.push_back(task);
         }
-        int shrageBez, shrageZ;
-        shrageBez = schrage(tasks);
-        shrageZ = schrmptn2(tasks);
-        cout << "shrage z podzialem:" << shrageZ << endl;
-        cout << "shrage bez podzialu:"<< shrageBez << endl;
+        int schrageBez, schrageZ, schrageBez2, schrageZ2;
         
+
+        auto start = std::chrono::steady_clock::now();
+        schrageBez = schrage(tasks);
+        auto end = std::chrono::steady_clock::now();
+        double elapsed_seconds = double(std::chrono::duration_cast <std::chrono::nanoseconds>(end - start).count());
+        cout << "schrage bez podzialu (kopiec): " << schrageBez << " | Czas: "<< elapsed_seconds / 1e9<<" s" << endl;
+        time1 += elapsed_seconds;
+
+        start = std::chrono::steady_clock::now();
+        schrageBez2 = schrage2(tasks);
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = double(std::chrono::duration_cast <std::chrono::nanoseconds>(end - start).count());
+        cout << "schrage bez podzialu (kolejka): " << schrageBez2 << " | Czas: " << elapsed_seconds / 1e9 << " s" << endl;
+        time2 += elapsed_seconds;
+
+        start = std::chrono::steady_clock::now();
+        schrageZ = schrmptn(tasks);
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = double(std::chrono::duration_cast <std::chrono::nanoseconds>(end - start).count());
+        cout << "schrage z podzialem (kopiec): " << schrageZ << " | Czas: " << elapsed_seconds / 1e9 << " s" << endl;
+        time3 += elapsed_seconds;
+
+        start = std::chrono::steady_clock::now();
+        schrageZ2 = schrmptn2(tasks);
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = double(std::chrono::duration_cast <std::chrono::nanoseconds>(end - start).count());
+        cout << "schrage z podzialem (kolejka): " << schrageZ2 << " | Czas: " << elapsed_seconds / 1e9 << " s" << endl;
+        time4 += elapsed_seconds;
+
         stream >> text; // schrmptn
         stream >> temp; // czas
-        if (shrageZ != temp) cout << "Zly wynik shrage z podzialem !!!!!!!!!!!" << endl;
+        //if (shrageZ != temp) cout << "Zly wynik shrage z podzialem !!!!!!!!!!!" << endl;
         stream >> text; // schr
         stream >> temp; // czas
-        if (shrageBez != temp) cout << "Zly wynik shrage bez podzialu !!!!!!!!!!!" << endl;
+        //if (shrageBez != temp) cout << "Zly wynik shrage bez podzialu !!!!!!!!!!!" << endl;
         for (int i = 0; i < tasksNumber; i++) // uporzadkowanie schr
         {
             stream >> temp;
         }
         p++;
     }
+    cout << endl;
+    cout << "Calkowity czas schrage bez podzialu (kopiec): " << time1 / 1e9 << " s" << endl;
+    cout << "Calkowity czas schrage bez podzialu (kolejka): " << time2 / 1e9 << " s" << endl;
+    cout << "Calkowity czas schrage z podzialem (kopiec): " << time3 / 1e9 << " s" << endl;
+    cout << "Calkowity czas schrage z podzialem (kolejka): " << time4 / 1e9 << " s" << endl;
     system("pause");
     
 }
