@@ -185,7 +185,7 @@ void passElementInSpecificLocation(int oldPositionOfTheElement, int newPositionO
     tab[newPositionOfTheElement] = oldPositionValue;
 }
 
-int main123() {
+void main123() {
     int Order[6] = { 4,0,1,2,3,5 };
     int P[6] = { 1,46,5,93,83,1 };
     int W[6] = { 2,5,7,4,1,1 };
