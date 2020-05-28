@@ -10,6 +10,8 @@
 
 using namespace std;
 
+int MAX_STEPS = 10;
+
 struct Dane {
     string numerDanych;
     vector<Task> tasks;
@@ -22,8 +24,20 @@ struct SchrageResult {
     vector<Task> result;
 };
 
+struct CarlierResult
+{
+    int cmax;
+    vector<Task> result;
+};
+
+int carlier(vector<Task>& tasks, int UB, int step);
 
 SchrageResult schrmptn2(vector<Task>& tasks);
+
+int findA(vector<Task>& tasks, int b, int cmax);
+int findB(vector<Task>& tasks, int cmax);
+int findC(vector<Task>& tasks, int a, int b);
+
 
 int main()
 {
@@ -73,11 +87,15 @@ int main()
         cout << "Schrage result: " << schrageResult.cmax<< endl;
         cout << "Schrage order: ";
         for (int j = 0; j < schrageResult.result.size(); j++) {
-            cout << schrageResult.result[i].index + 1 << " ";
+            cout << schrageResult.result[j].index + 1 << " ";
         }
+
+        cout << "\nUB: " << carlier(VectorOfDane[i].tasks, INT_MAX, 0) << endl;
+
+
         cout << endl;
-        cout << "Optimal result: " << VectorOfDane[i].optimal << endl;
-        cout << "Optimal order: ";
+        cout << "Carl: " << VectorOfDane[i].optimal << endl;
+        cout << "Order: ";
         for (int j = 0; j < VectorOfDane[i].optimalOrder.size(); j++) {
             cout << VectorOfDane[i].optimalOrder[j]+1 << " ";
         }
@@ -104,6 +122,46 @@ struct Qwieksze
         return false;
     }
 };
+
+SchrageResult schrage2(vector<Task>& tasks)
+{
+    priority_queue < Task, std::vector < Task >, Rmniejsze > N;
+    priority_queue < Task, std::vector < Task >, Qwieksze > G;
+    vector<Task> result;
+    SchrageResult schrageResult;
+    int t = 0;
+    int cmax = 0;
+    Task e;
+    for (int i = 0; i < tasks.size(); i++)
+    {
+        N.push(tasks[i]);
+    }
+    while (!(N.empty()) || !(G.empty()))
+    {
+        while (!(N.empty()) && N.top().r <= t) {
+            e = N.top();
+            N.pop();
+            G.push(e);
+        }
+
+        if (G.empty()) {
+            t = N.top().r;
+        }
+        else
+        {
+            e = G.top();
+            G.pop();
+            result.push_back(e);
+            t = t + e.p;
+            cmax = max(cmax, t + e.q);
+
+        }
+
+    }
+    schrageResult.cmax = cmax;
+    schrageResult.result = result;
+    return schrageResult;
+}
 
 SchrageResult schrmptn2(vector<Task>& tasks)
 {
@@ -162,13 +220,100 @@ SchrageResult schrmptn2(vector<Task>& tasks)
 }
 
 
-// Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
-// Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
+int carlier(vector<Task>& tasks, int UB, int step) {
+    step++;
+    int U;
+    int LB = 0;
+    int a=0, b=0, c = -1, rp = INT_MAX, qp = INT_MAX, pp=0, rdefault, qdefault,lbresult;
+    
+    vector<Task> optimalOrder;
+    vector<Task> K;
+    CarlierResult carlierResult;
+    SchrageResult schrageResult = schrage2(tasks);
+    SchrageResult schrageResult2;
+    U = schrageResult.cmax;
+    if (U < UB) {
+        UB = U;
+        optimalOrder = schrageResult.result;
+    }
+    b = findB(schrageResult.result, schrageResult.cmax);
+    a = findA(schrageResult.result, b, schrageResult.cmax);
+    c = findC(schrageResult.result, b, a);
+    if (c < 0) {
+        return UB;
+    }
+    for(int i = c + 1; i <= b; i++){
+        rp = min(rp, schrageResult.result[i].r);
+        qp = min(qp, schrageResult.result[i].q);
+        pp += schrageResult.result[i].p;
+    }
+    rdefault = schrageResult.result[c].r;
+    schrageResult.result[c].r = max(schrageResult.result[c].r, rp + pp);
+    schrageResult2 = schrmptn2(schrageResult.result);
+    LB = schrageResult2.cmax;
+    if (LB < UB) {
+        if (step < MAX_STEPS) {
+            lbresult = carlier(schrageResult.result, UB, step);
+            if (lbresult < UB) {
+                UB = lbresult;
+            }
+        }
+    }
+    schrageResult.result[c].r = rdefault;
+    qdefault = schrageResult.result[c].q;
+    schrageResult.result[c].q =max(qp+pp,schrageResult.result[c].q);
+    schrageResult2 = schrmptn2(schrageResult.result);
+    LB = schrageResult2.cmax;
+    if (LB < UB) {
+        if (step < MAX_STEPS) {
+            lbresult = carlier(schrageResult.result, UB, step);
+            if (lbresult < UB) {
+                UB = lbresult;
+            }
+        }
+    }
+    schrageResult.result[c].q = qdefault;
+    return UB;
+}
 
-// Porady dotyczące rozpoczynania pracy:
-//   1. Użyj okna Eksploratora rozwiązań, aby dodać pliki i zarządzać nimi
-//   2. Użyj okna programu Team Explorer, aby nawiązać połączenie z kontrolą źródła
-//   3. Użyj okna Dane wyjściowe, aby sprawdzić dane wyjściowe kompilacji i inne komunikaty
-//   4. Użyj okna Lista błędów, aby zobaczyć błędy
-//   5. Wybierz pozycję Projekt > Dodaj nowy element, aby utworzyć nowe pliki kodu, lub wybierz pozycję Projekt > Dodaj istniejący element, aby dodać istniejące pliku kodu do projektu
-//   6. Aby w przyszłości ponownie otworzyć ten projekt, przejdź do pozycji Plik > Otwórz > Projekt i wybierz plik sln
+int doTask(vector<Task> tasks, int n) {
+    int c=0;
+    int m=0;
+    for (int i = 0; i <= n; i++) {
+        m = max(m, tasks[i].r) + tasks[i].p;
+        c = max(m + tasks[i].q, c);
+    }
+    return m;
+}
+
+int findB(vector<Task>& tasks, int cmax) {
+    int b = -1;
+    for (int i = 0; i < tasks.size();i++) {
+        if (doTask(tasks,i)+tasks[i].q == cmax) {
+            b=i;
+        }
+    }
+    return b;
+}
+
+int findA(vector<Task>& tasks, int b, int cmax) {
+    for (int i = 0; i <=b; i++) {
+        int suma = 0;
+        for (int j = i; j <= b; j++) {
+            suma += tasks[j].p;
+        }
+        if (cmax == (tasks[i].r + suma + tasks[b].q)) {
+            return i;
+        }
+    }
+}
+
+int findC(vector<Task>& tasks, int b, int a) {
+    int c = -1;
+    for (int i = b; i >= a; i--) {
+        if (tasks[i].q < tasks[b].q) {
+            return c=i;
+        }
+    }
+    return c;
+}
